@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "188943315093",
+    "project_id": "notifications-2258f",
+    "storage_bucket": "notifications-2258f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:188943315093:android:61b10727acd04700a7ab9c",
+        "android_client_info": {
+          "package_name": "br.com.crmsolucoes.notifications"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMFO72uYQZELTKRb0orv2k9PwEIo2LyDA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
