@@ -7,20 +7,6 @@
 
 ## Fase 1: Configuração do Flutter e Pacotes
 
-### 1.1 Adicionar Dependências
-
-Abra o seu arquivo pubspec.yaml e adicione os seguintes pacotes:
-
-```yaml
-dependencies:
-  flutter:
-    sdk: flutter
-  firebase_core: <latest_version>
-  firebase_messaging: <latest_version>
-```
-
-### 1.2 Verificar Arquivo de Configuração do Android
-
 Certifique-se de que o arquivo de configuração nativo do Firebase para Android está no local correto.
 
 - Arquivo Necessário: **google-services.json**

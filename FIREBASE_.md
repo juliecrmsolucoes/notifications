@@ -19,22 +19,23 @@ dependencies:
     sdk: flutter
   firebase_core: <latest_version>
   firebase_messaging: <latest_version>
+  flutter_local_notifications: <latest_version>
 ```
 
 ### Configure o flutterfire
 
 ```bash
-> dart pub global activate flutterfire_cli
+dart pub global activate flutterfire_cli
 ```
 
 ```bat
-> firebase login
+firebase login
 ```
 
 Para selecionar o projeto e as plataformas:
 
 ```bat
-> flutterfire configure 
+flutterfire configure 
 ```
 
 ---
