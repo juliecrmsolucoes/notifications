@@ -19,123 +19,112 @@ dependencies:
   firebase_messaging: <latest_version>
 ```
 
-### 1.2 Verificar Arquivo de Configuração do iOS
+### 1.2 Verificar Arquivo de Configuração do Android
 
-Certifique-se de que o arquivo de configuração nativo do Firebase para iOS está no local correto.
+Certifique-se de que o arquivo de configuração nativo do Firebase para Android está no local correto.
 
-- Arquivo Necessário: **GoogleService-Info.plist**
+- Arquivo Necessário: **google-services.json**
 
-- Localização: Na pasta **ios/Runner/** do seu projeto.
+- Localização: Na pasta **android/app** do seu projeto.
 
-Se não o tiver, baixe-o do Firebase Console (Project Settings > General > Your Apps > iOS) e coloque-o na pasta ios/Runner.
+>Se não o tiver, baixe-o do Firebase Console.
 
-## Fase 2: Configuração do Servidor Apple (Important)
+## Fase 2: Configuração do Gradle
 
-O Firebase precisa de autorização da Apple para enviar notificações em nome do seu aplicativo. Isso é feito com uma Chave de Autenticação APNs (.p8).
+A versão 10+ do plugin agora depende do desugaring para oferecer suporte a notificações agendadas, com compatibilidade com versões anteriores do Android. Os desenvolvedores precisarão atualizar o arquivo Gradle do aplicativo para habilitar a dessugarização, mesmo que não usem notificações agendadas. Consulte o link sobre desugaring para obter mais detalhes, mas, para sua conveniência, você pode expandir abaixo para ver as partes relevantes, dependendo se o seu aplicativo possui um arquivo build.gradle ou build.gradle.kts.
 
-### 2.1 Gerar a Chave de Autenticação APNs (.p8)
+### Groovy - build.gradle
 
-- Acesse o Apple Developer Account.
-- Vá para Certificates, IDs & Profiles e, em seguida, Keys.
+```gradle
+android {
+    defaultConfig {
+        multiDexEnabled true
+    }
 
-- Clique no botão azul (+) para criar uma nova chave.
+    compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+        // Sets Java compatibility to Java 11
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
 
-- Dê um nome (ex: "FCM Push Key") e marque o serviço Apple Push Notifications service (APNs).
-
-- Clique em "Configure" e selecione no campo Environment "Sandbox & Production". Salve.  
-
-- Clique em Continue e depois em Register.
-
-- Na próxima tela, clique em Download para baixar o arquivo .p8.
-
->IMPORTANTE: Guarde este arquivo em segurança, pois ele só pode ser baixado uma vez. Anote o Key ID (identificador da chave) e o seu Team ID (identificador da sua equipe de desenvolvedor), visíveis nesta página.
-
-### 2.2 Carregar a Chave no Firebase
-
-- Acesse o Firebase Console.
-
-- Vá em Project Settings (⚙️) > Cloud Messaging.
-
-- Na seção Apple app configuration, clique em Upload para APNs Authentication Key.
-
-- Carregue o arquivo .p8 que você baixou.
-
-- Preencha o Key ID e o seu Team ID nos campos apropriados.
-
-- Resultado: O Firebase agora pode se comunicar com a Apple para entregar suas notificações.
-
-## Fase 3: Configuração Nativada no Xcode (Mandatória no Mac)
-
-Essas configurações não podem ser feitas no Windows e são obrigatórias para que o iOS permita que seu app receba notificações.
-
-### 3.1 Abrir o Projeto no Xcode
-
-- No seu Mac, navegue até a pasta ios do seu projeto.
-
-- Abra o arquivo Runner.xcworkspace (e não o .xcodeproj).
-
-### 3.2 Habilitar Capabilities
-
-- No Xcode, selecione o projeto Runner no painel esquerdo.
-
-- Selecione o target Runner.
-
-- Vá para a aba Signing & Capabilities.
-
-- Clique no botão + Capability e adicione:
-
-- Push Notifications
-
-- Clique novamente no botão + Capability e adicione:
-
-- Background Modes
-
-- Na seção Background Modes, marque a caixa Remote notifications.
-
->Importância: Isso permite que o aplicativo seja acordado em segundo plano para processar notificações.
-
-## Fase 4: Código Flutter/Dart
-
-Você precisa de código para inicializar o Firebase, pedir permissão ao usuário (obrigatório no iOS) e definir como as mensagens serão tratadas (FirebaseMessagingService).
-
-## Fase 5: flutter_local_notification Setup
-
-Vá para ios/Runner/AppDelegate.swift
-
-### Importe o package
-
-```swift
-import flutter_local_notifications
-```
-
-### Insira o código
-
-Dentro da função principal (após ``-> Bool`` e antes de ``GeneratedPluginRegistrant.register(with: self)``) insira:
-
-```swift
-FlutterLocalNotificationsPlugin.setPluginRegistrantCallback { (registry) in
-  GeneratedPluginRegistrant.register(with: registry)
+    kotlinOptions {
+        jvmTarget = "11"
+    }
 }
 
-if #available(iOS 10.0, *) {
-  UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
+dependencies {
+    // Add LibraryDesugaring dependencie
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
 }
 ```
 
-## Fase 6: Teste Final
+---
 
-Para testar se tudo está funcionando:
+Observe que o plugin utiliza o plugin Android Gradle (AGP) 8.6.0 para aproveitar essa funcionalidade. Portanto, para garantir a segurança, os aplicativos devem usar, no mínimo, a mesma versão.
 
-- Execute seu aplicativo no dispositivo iOS físico (simuladores não funcionam bem com FCM).
+```gradle
+buildscript {
+   ...
 
-- Coloque o aplicativo em segundo plano ou feche-o completamente.
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.6.0'
+        ...
+    }
+```
 
-- Acesse o Firebase Console e vá em Engage > Messaging.
+Se o seu aplicativo estiver usando a nova sintaxe declarativa do Plugin DSL, o arquivo a ser atualizado será android/settings.gradle ou android/settings.gradle.kts e será semelhante ao seguinte
 
-- Crie uma nova campanha de notificação (ou use o Notifications composer).
+```gradle
+plugins {
+    ...
+    id 'com.android.application' version '8.6.0' apply false
+    ...
+}
+```
 
-- Defina o título, o corpo da mensagem e selecione o seu aplicativo iOS como alvo.
+O plugin também requer que o compileSdk no arquivo Gradle do seu aplicativo esteja definido como 35, no mínimo:
 
-- Envie a mensagem de teste.
+```gradle
+android {
+    compileSdk 35
+    ...
+}
+```
 
->Se a notificação aparecer no seu dispositivo com o app em segundo plano ou fechado, a configuração foi bem-sucedida. Se aparecer apenas com o app aberto (e você tiver implementado a notificação local), mas não em segundo plano, o problema está provavelmente nas Capabilities do Xcode (Fase 3).
+>Há relatos de que habilitar a desaçucaração pode resultar em travamentos de aplicativos do Flutter no Android 12L e versões superiores. Isso seria um problema com o próprio Flutter, não com o plugin. Uma possível solução é adicionar a biblioteca WindowManager como dependência: ``implementation 'androidx.window:window:1.0.0'`` e ``implementation 'androidx.window:window-java:1.0.0'``
+---
+
+>Para arquivos em kotlin (.kts) pesquisar no próprio package (<https://pub.dev/packages/flutter_local_notifications#-android-setup>) por ``Kotlin - build.gradle.kts``.
+
+### Configuração do AndroidManifest
+
+Anteriormente, o plugin especificava todas as permissões necessárias para todos os recursos suportados pelo plugin em seu próprio arquivo AndroidManifest.xml, para que os desenvolvedores não precisassem fazer isso no arquivo AndroidManifest.xml de seus próprios aplicativos. A partir da versão 16, o plugin agora especifica apenas o mínimo necessário e as permissões POST_NOTIFICATIONS e VIBRATE.
+
+```xml
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+<uses-permission android:name="android.permission.VIBRATE"/>
+```
+
+### Para lidar com notificações agendadas, são necessárias as seguintes alterações
+
+Adicione boot completed
+
+```xml
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+```
+
+E adicione o código abaixo dentro de ``<application>``
+
+```xml
+<receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+<receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">
+    <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED"/>
+        <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+        <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+        <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+    </intent-filter>
+</receiver>
+```

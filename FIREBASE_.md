@@ -5,17 +5,13 @@ Tutorial de como adicionar notificações push num projeto Flutter.
 
 ## No Console Firebase
 
-Clique em **Adicionar app** logo abaixo do nome do projeto
+Clique em **Adicionar app** logo abaixo do nome do projeto e selecione **Flutter**:
 
-Selecione **Flutter**:
-
-![Texto Alternativo](tutorial2.jpg)
+<img src="tutorial2.jpg" alt="isolated" width="400"/>
 
 ## No projeto Flutter
 
 Certifique que seu arquivo pubspec.yaml contem os pacotes do firebase `firebase_messaging` e `firebase_core`.
-
-Abra o seu arquivo pubspec.yaml e adicione os seguintes pacotes:
 
 ```yaml
 dependencies:
@@ -25,7 +21,7 @@ dependencies:
   firebase_messaging: <latest_version>
 ```
 
-### Configurar flutterfire
+### Configure o flutterfire
 
 ```bash
 > dart pub global activate flutterfire_cli
@@ -41,6 +37,34 @@ Para selecionar o projeto e as plataformas:
 > flutterfire configure 
 ```
 
+---
+---
+
+### Definir plataforma
+
+Faça o **passo a passo** pra configurar sua plataforma, há um markdown para iOS (``FIREBASE_IOS.md``) e outro para Android (``FIREBASE_ANDROID.md``).
+
+---
+---
+
+## Código
+
+Adicione os seguintes services
+
+### FirebaseMessagingService
+
+Olhar o arquivo ``firebase_messaging_service.dart``
+
+### LocalNotificationsService
+
+Olhar o arquivo ``local_notifications_service.dart``
+
+.
+
+>IMPORTANTE: Verifique o **ICONE** setado no AndroidInitializationSettings -> "@mipmap/ic_launcher"
+
+---
+
 ### Inicializar Firebase
 
 No arquivo main (ou nas dependencias iniciais do projeto), coloque o código:
@@ -50,7 +74,3 @@ await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
 );
 ```
-
----
-_
->IMPORTANTE: Verifique o icone setado no AndroidInitializationSettings - "@mipmap/ic_launcher"
