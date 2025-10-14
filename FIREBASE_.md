@@ -71,7 +71,21 @@ Olhar o arquivo ``local_notifications_service.dart``
 No arquivo main (ou nas dependencias iniciais do projeto), coloque o código:
 
 ```dart
-await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-);
+void main() async {
+  // Crucial para garantir inicialização do Flutter
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializa Firebase
+  await Firebase.initializeApp();
+
+  // Inicializa o service do FlutterLocalNotification
+  final localNotificationsService = LocalNotificationsService.instance();
+  await localNotificationsService.init();
+
+  // Inicializa o service do FirebaseMessaging
+  final firebaseMessagingService = FirebaseMessagingService.instance();
+  await firebaseMessagingService.init(localNotificationService: localNotificationsService);
+
+  runApp(const MyApp());
+}
 ```
