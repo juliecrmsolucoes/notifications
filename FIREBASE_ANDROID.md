@@ -5,9 +5,7 @@
 
 ---
 
-## Fase 1: Configuração do Flutter e Pacotes
-
-Certifique-se de que o arquivo de configuração nativo do Firebase para Android está no local correto.
+>Certifique-se de que o arquivo de configuração nativo do Firebase para Android está no local correto.
 
 - Arquivo Necessário: **google-services.json**
 
@@ -15,7 +13,7 @@ Certifique-se de que o arquivo de configuração nativo do Firebase para Android
 
 >Se não o tiver, baixe-o do Firebase Console.
 
-## Fase 2: Configuração do Gradle
+## 🧱 Fase 2: Configurar Gradle (Android) `android/build.gradle`
 
 A versão 10+ do plugin agora depende do desugaring para oferecer suporte a notificações agendadas, com compatibilidade com versões anteriores do Android. Os desenvolvedores precisarão atualizar o arquivo Gradle do aplicativo para habilitar a dessugarização, mesmo que não usem notificações agendadas. Consulte o link sobre desugaring para obter mais detalhes, mas, para sua conveniência, você pode expandir abaixo para ver as partes relevantes, dependendo se o seu aplicativo possui um arquivo build.gradle ou build.gradle.kts.
 
@@ -24,13 +22,14 @@ A versão 10+ do plugin agora depende do desugaring para oferecer suporte a noti
 ```gradle
 android {
     defaultConfig {
+        // Add the line below
         multiDexEnabled true
     }
 
     compileOptions {
-        // Flag to enable support for the new language APIs
+        // Add the line below
         coreLibraryDesugaringEnabled true
-        // Sets Java compatibility to Java 11
+        // Verifique se o java é 11 ou maior
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
@@ -41,14 +40,14 @@ android {
 }
 
 dependencies {
-    // Add LibraryDesugaring dependencie
+    // Add the line below
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
 }
 ```
 
 ---
 
-Observe que o plugin utiliza o plugin Android Gradle (AGP) 8.6.0 para aproveitar essa funcionalidade. Portanto, para garantir a segurança, os aplicativos devem usar, no mínimo, a mesma versão.
+**Observe** que o plugin utiliza o plugin Android Gradle (AGP) 8.6.0 para aproveitar essa funcionalidade. Portanto, para garantir a segurança, os aplicativos devem usar, **NO MÍNIMO**, a mesma versão.
 
 ```gradle
 buildscript {
@@ -60,7 +59,7 @@ buildscript {
     }
 ```
 
-Se o seu aplicativo estiver usando a nova sintaxe declarativa do Plugin DSL, o arquivo a ser atualizado será android/settings.gradle ou android/settings.gradle.kts e será semelhante ao seguinte
+Ou se o seu aplicativo estiver usando a nova sintaxe declarativa do Plugin DSL, o arquivo a ser atualizado será android/settings.gradle ou android/settings.gradle.kts e será semelhante ao seguinte
 
 ```gradle
 plugins {
@@ -70,13 +69,19 @@ plugins {
 }
 ```
 
-O plugin também requer que o compileSdk no arquivo Gradle do seu aplicativo esteja definido como 35, no mínimo:
+Garanta as versões mínimas:
 
 ```gradle
 android {
-    compileSdk 35
-    ...
+    namespace "com.example.meuapp"
+    compileSdkVersion 34
+
+    defaultConfig {
+        minSdkVersion 23
+        targetSdkVersion 34
+    }
 }
+
 ```
 
 >Há relatos de que habilitar a desaçucaração pode resultar em travamentos de aplicativos do Flutter no Android 12L e versões superiores. Isso seria um problema com o próprio Flutter, não com o plugin. Uma possível solução é adicionar a biblioteca WindowManager como dependência: ``implementation 'androidx.window:window:1.0.0'`` e ``implementation 'androidx.window:window-java:1.0.0'``

@@ -3,13 +3,107 @@
 
 Tutorial de como adicionar notificações push num projeto Flutter.
 
-## No Console Firebase
+---
 
-Clique em **Adicionar app** logo abaixo do nome do projeto e selecione **Flutter**:
+## 🔧 1. Pré-requisitos
 
-<img src="tutorial2.jpg" alt="isolated" width="400"/>
+- Flutter SDK utilizado neste projeto: `3.35.5`
+- Node.js instalado (necessário para `flutterfire` CLI)
+- Projeto Flutter existente
+- **Projeto Firebase** criado
+- Conta no [Firebase Console](https://console.firebase.google.com/)
 
-## No projeto Flutter
+---
+
+### Console Firebase
+
+>**Não** é necessáro clicar em **Adicionar app**, deixaremos para fazer isso via linha de comando!
+
+---
+
+## 🚀 2. Configurar Firebase e FlutterFire
+
+Caso não tenha instalado a CLI rode o seguinte comando:
+
+```bash
+npm install -g firebase-tools
+```
+
+Faça login no Firebase com sua Conta do Google executando o seguinte comando:
+
+```bash
+firebase login
+```
+
+Execute no terminal (globalmente):
+
+```bash
+dart pub global activate flutterfire_cli
+```
+
+## 🔥 3. Vincular o Firebase ao Flutter
+
+No terminal (na raiz do projeto Flutter):
+
+```bash
+flutterfire configure
+```
+
+Escolha o projeto Firebase criado e o app Android.
+
+Isso vai gerar automaticamente os arquivos:
+
+``lib/firebase_options.dart``
+
+``google-services.json``
+
+---
+
+## 📱No projeto Flutter
+
+### 🧱 4. Configurar Gradle (Android) `android/build.gradle`
+
+Adicione o plugin do Google Services no `buildscript`:
+
+```gradle
+buildscript {
+    dependencies {
+        classpath 'com.google.gms:google-services:4.4.2'
+    }
+}
+```
+
+### 4.2 `android/app/build.gradle`
+
+Aplique o plugin **no final do arquivo**:
+
+```gradle
+apply plugin: 'com.google.gms.google-services'
+```
+
+Garanta as versões mínimas:
+
+```gradle
+android {
+    namespace "com.example.meuapp"
+    compileSdkVersion 34
+
+    defaultConfig {
+        minSdkVersion 23
+        targetSdkVersion 34
+    }
+}
+```
+
+### 4.3 Permissões (AndroidManifest.xml)
+Abra `android/app/src/main/AndroidManifest.xml` e adicione:
+
+```xml
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+```
+
+---
 
 Certifique que seu arquivo pubspec.yaml contem os pacotes do firebase `firebase_messaging` e `firebase_core`.
 
@@ -22,47 +116,29 @@ dependencies:
   flutter_local_notifications: <latest_version>
 ```
 
-### Configure o flutterfire
-
-```bash
-dart pub global activate flutterfire_cli
-```
-
-```bat
-firebase login
-```
-
-Para selecionar o projeto e as plataformas:
-
-```bat
-flutterfire configure 
-```
-
----
 ---
 
 ### Definir plataforma
 
-Faça o **passo a passo** pra configurar sua plataforma, há um markdown para iOS (``FIREBASE_IOS.md``) e outro para Android (``FIREBASE_ANDROID.md``).
+Siga o **passo a passo** pra configurar sua plataforma ANTES de prosseguir, há um markdown para iOS (``FIREBASE_IOS.md``) e outro para Android (``FIREBASE_ANDROID.md``).
 
 ---
 ---
+---
 
-## Código
+## 5. Código
 
-Adicione os seguintes services
+Após configurar de acordo com sua plataforma, continue com o Flutter.
 
-### FirebaseMessagingService
+### Adicione os seguintes services
 
-Olhar o arquivo ``firebase_messaging_service.dart``
+``FirebaseMessagingService`` -> Olhar o arquivo ``firebase_messaging_service.dart``
 
-### LocalNotificationsService
-
-Olhar o arquivo ``local_notifications_service.dart``
+``LocalNotificationsService`` -> Olhar o arquivo ``local_notifications_service.dart``
 
 .
 
->IMPORTANTE: Verifique o **ICONE** setado no AndroidInitializationSettings -> "@mipmap/ic_launcher"
+>IMPORTANTE: Verificar o **ICONE** no AndroidInitializationSettings -> "@mipmap/ic_launcher"
 
 ---
 
