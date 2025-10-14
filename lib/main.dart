@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:notifications/firebase_options.dart';
 import 'package:notifications/services/firebase_messaging_service.dart';
 import 'package:notifications/services/local_notifications_service.dart';
 
@@ -8,7 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Inicializa Firebase
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Inicializa o service do FlutterLocalNotification
   final localNotificationsService = LocalNotificationsService.instance();

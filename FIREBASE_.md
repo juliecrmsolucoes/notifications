@@ -96,6 +96,7 @@ android {
 ```
 
 ### 4.3 Permissões (AndroidManifest.xml)
+
 Abra `android/app/src/main/AndroidManifest.xml` e adicione:
 
 ```xml
@@ -152,7 +153,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Inicializa Firebase
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   // Inicializa o service do FlutterLocalNotification
   final localNotificationsService = LocalNotificationsService.instance();
