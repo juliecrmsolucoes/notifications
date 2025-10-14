@@ -1,17 +1,21 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:notifications/services/firebase_messaging_service.dart';
 import 'package:notifications/services/local_notifications_service.dart';
 
 void main() async {
+  // Crucial para garantir inicialização do Flutter
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Inicializa Firebase
   await Firebase.initializeApp();
 
+  // Inicializa o service do FlutterLocalNotification
   final localNotificationsService = LocalNotificationsService.instance();
   await localNotificationsService.init();
-  final firebaseMessagingService = FirebaseMessagingService.instance();
 
+  // Inicializa o service do FirebaseMessaging
+  final firebaseMessagingService = FirebaseMessagingService.instance();
   await firebaseMessagingService.init(localNotificationService: localNotificationsService);
 
   runApp(const MyApp());
