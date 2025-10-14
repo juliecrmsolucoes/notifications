@@ -1,13 +1,25 @@
 
-# iOS Push Notifications for Flutter — passo a passo
+# ANDROID Push Notifications for Flutter — passo a passo
 
-> Objetivo: adicionar notificações push em iOS num projeto Flutter já existente, usando **Firebase Cloud Messaging (FCM)**.
+> Objetivo: adicionar notificações push em ANDROID num projeto Flutter já existente, usando **Firebase Cloud Messaging (FCM)**.
 
 ---
 
 ## Fase 1: Configuração do Flutter e Pacotes
 
-### Verificar Arquivo de Configuração do iOS
+### 1.1 Adicionar Dependências
+
+Abra o seu arquivo pubspec.yaml e adicione os seguintes pacotes:
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: <latest_version>
+  firebase_messaging: <latest_version>
+```
+
+### 1.2 Verificar Arquivo de Configuração do iOS
 
 Certifique-se de que o arquivo de configuração nativo do Firebase para iOS está no local correto.
 

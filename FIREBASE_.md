@@ -3,11 +3,9 @@
 
 Tutorial de como adicionar notificações push num projeto Flutter.
 
-## Criando projeto no FIREBASE
+## No Console Firebase
 
-Clique em **Adicionar app**:
-
-![Texto Alternativo](tutorial1.jpg)
+Clique em **Adicionar app** logo abaixo do nome do projeto
 
 Selecione **Flutter**:
 
@@ -17,7 +15,17 @@ Selecione **Flutter**:
 
 Certifique que seu arquivo pubspec.yaml contem os pacotes do firebase `firebase_messaging` e `firebase_core`.
 
-Se sim, execute:
+Abra o seu arquivo pubspec.yaml e adicione os seguintes pacotes:
+
+```yaml
+dependencies:
+  flutter:
+    sdk: flutter
+  firebase_core: <latest_version>
+  firebase_messaging: <latest_version>
+```
+
+### Configurar flutterfire
 
 ```bash
 > dart pub global activate flutterfire_cli
@@ -42,3 +50,7 @@ await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
 );
 ```
+
+---
+_
+>IMPORTANTE: Verifique o icone setado no AndroidInitializationSettings - "@mipmap/ic_launcher"
