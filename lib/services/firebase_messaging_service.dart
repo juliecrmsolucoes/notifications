@@ -9,18 +9,21 @@ class FirebaseMessagingService {
   // Private constructor for singleton pattern
   FirebaseMessagingService._internal();
 
-  static final FirebaseMessagingService _instance = FirebaseMessagingService._internal();
+  static final FirebaseMessagingService _instance =
+      FirebaseMessagingService._internal();
 
   factory FirebaseMessagingService.instance() => _instance;
 
   LocalNotificationsService? _localNotificationsService;
 
-  Future<void> init({required LocalNotificationsService localNotificationService}) async {
+  Future<void> init({
+    required LocalNotificationsService localNotificationService,
+  }) async {
     _localNotificationsService = localNotificationService;
 
-    await _handlePushNotificationsToken();
-
     await _requestPermission();
+
+    await _handlePushNotificationsToken();
 
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     FirebaseMessaging.onMessage.listen(_onForegroundMessage);
@@ -31,9 +34,7 @@ class FirebaseMessagingService {
     final token = Platform.isAndroid
         ? await FirebaseMessaging.instance.getToken()
         : await FirebaseMessaging.instance.getAPNSToken();
-    if (kDebugMode) {
-      log("📲 Token FCM atual: $token");
-    }
+    log("📲 Token FCM atual: $token");
 
     FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
       if (kDebugMode) {
@@ -45,7 +46,11 @@ class FirebaseMessagingService {
 
   /// Requests notification permission from the user
   Future<void> _requestPermission() async {
-    await FirebaseMessaging.instance.requestPermission(alert: true, badge: true, sound: true);
+    await FirebaseMessaging.instance.requestPermission(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
   }
 
   /// Handles messages received while the app is in the foreground
