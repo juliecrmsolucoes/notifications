@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -27,7 +28,9 @@ class FirebaseMessagingService {
   }
 
   Future<void> _handlePushNotificationsToken() async {
-    final token = await FirebaseMessaging.instance.getToken();
+    final token = Platform.isAndroid
+        ? await FirebaseMessaging.instance.getToken()
+        : await FirebaseMessaging.instance.getAPNSToken();
     if (kDebugMode) {
       log("📲 Token FCM atual: $token");
     }
