@@ -5,7 +5,8 @@ class LocalNotificationsService {
   LocalNotificationsService._internal();
 
   //Singleton instance
-  static final LocalNotificationsService _instance = LocalNotificationsService._internal();
+  static final LocalNotificationsService _instance =
+      LocalNotificationsService._internal();
 
   //Factory constructor to return singleton instance
   factory LocalNotificationsService.instance() => _instance;
@@ -14,7 +15,9 @@ class LocalNotificationsService {
   late FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
   //Android-specific initialization settings using app launcher icon
-  final _androidInitializationSettings = const AndroidInitializationSettings('@mipmap/ic_launcher'); //TODO
+  final _androidInitializationSettings = const AndroidInitializationSettings(
+    '@mipmap/ic_launcher',
+  ); //TODO
 
   //iOS-specific initialization settings with permission requests
   final _iosInitializationSettings = const DarwinInitializationSettings(
@@ -58,11 +61,21 @@ class LocalNotificationsService {
 
     // Create Android notification channel
     await _flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(_androidChannel);
 
     // Mark initialization as complete
     _isLocalNotificationInitialized = true;
+
+    LocalNotificationsService localNotificationsService =
+        LocalNotificationsService.instance();
+    await localNotificationsService.showNotification(
+      'TESTE LOCAL',
+      'Notificação local enviada pelo código',
+      'payload',
+    );
   }
 
   void _onDidReceiveNotificationResponse(NotificationResponse notification) {
@@ -70,7 +83,11 @@ class LocalNotificationsService {
   }
 
   /// Show a local notification with the given title, body, and payload.
-  Future<void> showNotification(String? title, String? body, String? payload) async {
+  Future<void> showNotification(
+    String? title,
+    String? body,
+    String? payload,
+  ) async {
     // Android-specific notification details
     AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       _androidChannel.id,
@@ -84,7 +101,10 @@ class LocalNotificationsService {
     const iosDetails = DarwinNotificationDetails();
 
     // Combine platform-specific details
-    final notificationDetails = NotificationDetails(android: androidDetails, iOS: iosDetails);
+    final notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
 
     // Display the notification
     await _flutterLocalNotificationsPlugin.show(

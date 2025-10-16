@@ -31,9 +31,11 @@ class FirebaseMessagingService {
   }
 
   Future<void> _handlePushNotificationsToken() async {
-    final token = Platform.isAndroid
-        ? await FirebaseMessaging.instance.getToken()
-        : await FirebaseMessaging.instance.getAPNSToken();
+    if (Platform.isIOS) {
+      await FirebaseMessaging.instance.getAPNSToken();
+    }
+    final token = await FirebaseMessaging.instance.getToken();
+
     log("📲 Token FCM atual: $token");
 
     FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
